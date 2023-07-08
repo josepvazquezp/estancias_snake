@@ -42,7 +42,7 @@ foodY = random.randrange(0, 49) * 10
 snake = [(headX, headY)]
 food = [(foodX, foodY)]
 
-
+#funciones logica del juego
 def moveSnake(direction, snake, vel):
     newHeadX = snake[0][0]
     newHeadY = snake[0][1]
@@ -59,24 +59,6 @@ def moveSnake(direction, snake, vel):
         newHeadX -= vel
 
     snake.insert(0, (newHeadX, newHeadY))
-
-
-def drawSnake(win, snake, pixelWidth, pixelHeight):
-    win.fill(BACKGROUND_C)
-
-    for pixel in snake:
-        pygame.draw.rect(win, (SNAKE_C), (pixel[0], pixel[1], pixelWidth, pixelHeight))
-
-    pygame.display.update()
-
-
-def drawFood(win, food, pixelWidth, pixelHeight):
-    pygame.display.flip()
-
-    for pixel in food:
-        pygame.draw.rect(win, (FOOD_C), (pixel[0], pixel[1], pixelWidth, pixelHeight))
-
-    pygame.display.update()
 
 
 def growSnake(snake, pixelWidth, pixelHeight):
@@ -115,133 +97,126 @@ def outOfBounds(snake, screensize):
 
     return False                        #game_over = False
 
-def colisionSerpiente(snake):
-    global game_over
-    cuenta = snake.count(snake[0])
+def snakeCollision(snake, gameOver):
+    count = snake.count(snake[0])
 
-    if cuenta > 1:
-        game_over = True
+    if count > 1:
+        return True                     #game_over = True
 
-
-def gameOver(win):
-    global game_over
-    if game_over == True:
-        win.get_rect()
-        font = pygame.font.Font(None, 80)
-        fuente = pygame.font.Font(None, 30)
-        text1 = font.render("Game Over", True, GAME_OVER_C)
-        text2 = fuente.render("R", True, K_COMMAND_C)
-        text3 = fuente.render("Restart", True, W_COMMAND_C)
-        text4 = fuente.render("Q", True, K_COMMAND_C)
-        text5 = fuente.render("Quit", True, W_COMMAND_C)
-        text1.get_rect()
-        text2.get_rect()
-        text3.get_rect()
-        text4.get_rect()
-        text5.get_rect()
-        win.blit(text1, (100, 120))
-        win.blit(text2, (160, 280))
-        win.blit(text3, (190, 280))
-        win.blit(text4, (160, 315))
-        win.blit(text5, (190, 315))
-
-    pygame.display.flip()
+    return gameOver
 
 
-def pausar(win, keys):
-    global pause
-    if keys[pygame.K_p]:
-        pause = True
+def restart(snake, food, headX, headY):
+    snake.clear()
+    snake.append((headX, headY))
 
-    if pause == True:
-        win_rect = win.get_rect()
-        font = pygame.font.Font(None, 30)
-        texto = font.render("C", True, K_COMMAND_C)
-        text_surface = font.render("Continue", True, W_COMMAND_C)
-        text_rect = text_surface.get_rect()
-        texto.get_rect()
-        text_rect.center = win_rect.center
-        win.blit(texto, (160, 240))
-        win.blit(text_surface, text_rect)
-
-        if keys[pygame.K_c]:
-            pause = False
-
-    pygame.display.flip()
+    food.clear()
+    x = random.randrange(0, 49) * 10
+    y = random.randrange(0, 49) * 10
+    food.append((x, y))
 
 
-def reiniciar(keys):
-    global game_over
-    global direction
-    if game_over == True and keys[pygame.K_r]:
-        snake.clear()
-        snake.append((headX, headY))
-        food.clear()
-        x = random.randrange(0, 49) * 10
-        y = random.randrange(0, 49) * 10
-        food.append((x, y))
-        game_over = False
+#funciones interfaz grafica
+def drawSnake(win, snake, pixelWidth, pixelHeight, background_c, snake_c):
+    win.fill(background_c)
 
-        direction = "RIGHT"
-
-        pygame.display.update()
-
-
-def salir(keys):
-    global game_over
-    global running
-    if game_over == True and keys[pygame.K_q]:
-        running = False
-
-
-def puntos(snake, win):
-    global game_over
-    cuenta = len(snake)
-
-    if game_over == True:
-        win.get_rect()
-        font = pygame.font.Font(None, 30)
-        puntuacion = font.render("Points: " + str(cuenta), True, POINTS_C)
-        puntuacion.get_rect()
-        win.blit(puntuacion, (210, 200))
-
-
-def pantallaStart(win, keys):
-    global start
-    global game_over
-    global pause
-    if start == False:
-        win.get_rect()
-        f = pygame.font.Font(None, 120)
-        s = pygame.font.Font(None, 30)
-        snake = f.render("SNAKE", True, TITLE_C)
-        st = s.render("S", True, K_COMMAND_C)
-        pres = s.render("Start", True, W_COMMAND_C)
-        by = s.render("By: JPVP", True, AUTHOR_C)
-        snake.get_rect()
-        pres.get_rect()
-        st.get_rect()
-        win.blit(snake, (100, 100))
-        win.blit(st, (220, 220))
-        win.blit(pres, (240, 220))
-        win.blit(by, (210, 370))
-
-        if keys[pygame.K_s]:
-            start = True
-
+    for pixel in snake:
+        pygame.draw.rect(win, (snake_c), (pixel[0], pixel[1], pixelWidth, pixelHeight))
 
     pygame.display.update()
 
-def main():
-    global direction
-    global running
-    global snake
-    global food
-    global VEL
-    global PIXEL_WIDTH
-    global PIXEL_HEIGTH
-    global SCREENSIZE
-    global game_over
+
+def drawFood(win, food, pixelWidth, pixelHeight, food_c):
+    pygame.display.flip()
+
+    for pixel in food:
+        pygame.draw.rect(win, food_c, (pixel[0], pixel[1], pixelWidth, pixelHeight))
+
+    pygame.display.update()
+
+
+def gameOverWindow(win, snake, game_over_c, k_command_c, w_command_c, points_c):
+    count = len(snake) - 1
+
+    win.get_rect()
+
+    font = pygame.font.Font(None, 80)
+    font2 = pygame.font.Font(None, 30)
+
+    text1 = font.render("Game Over", True, game_over_c)
+    text2 = font2.render("R", True, k_command_c)
+    text3 = font2.render("Restart", True, W_COMMAND_C)
+    text4 = font2.render("Q", True, k_command_c)
+    text5 = font2.render("Quit", True, w_command_c)
+    points = font2.render("Points: " + str(count), True, points_c)
+
+    text1.get_rect()
+    text2.get_rect()
+    text3.get_rect()
+    text4.get_rect()
+    text5.get_rect()
+    points.get_rect()
+
+    win.blit(text1, (100, 120))
+    win.blit(text2, (160, 280))
+    win.blit(text3, (190, 280))
+    win.blit(text4, (160, 315))
+    win.blit(text5, (190, 315))
+    win.blit(points, (210, 200))
+
+    pygame.display.flip()
+
+
+def pauseWindow(win, k_command_c, w_command_c):
+    win_rect = win.get_rect()
+
+    font = pygame.font.Font(None, 30)
+
+    text = font.render("C", True, k_command_c)
+    text_surface = font.render("Continue", True, w_command_c)
+
+    text_rect = text_surface.get_rect()
+    text.get_rect()
+
+    text_rect.center = win_rect.center
+
+    win.blit(text, (160, 240))
+    win.blit(text_surface, text_rect)
+
+    pygame.display.flip()
+
+
+def startWindow(win, title_c, k_command_c, w_command_c, author_c):
+    win.get_rect()
+
+    f = pygame.font.Font(None, 120)
+    s = pygame.font.Font(None, 30)
+
+    snake = f.render("SNAKE", True, title_c)
+    st = s.render("S", True, k_command_c)
+    pres = s.render("Start", True, w_command_c)
+    by = s.render("By: JPVP", True, author_c)
+
+    snake.get_rect()
+    pres.get_rect()
+    st.get_rect()
+    by.get_rect()
+
+    win.blit(snake, (100, 100))
+    win.blit(st, (220, 220))
+    win.blit(pres, (240, 220))
+    win.blit(by, (210, 370))
+
+    pygame.display.update()
+
+
+#funcion general
+def main(BACKGROUND_C, SNAKE_C, TITLE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COMMAND_C, POINTS_C, AUTHOR_C,
+         running, game_over, pause, start,
+         SCREENSIZE, PIXEL_WIDTH, PIXEL_HEIGTH,
+         headX, headY,
+         VEL,
+         direction):
 
     pygame.init()
     win = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
@@ -270,15 +245,21 @@ def main():
             if direction != "UP":
                 direction = "DOWN"
 
-        if(start == False):
-            pantallaStart(win, keys)
+        if start == False:
+            startWindow(win, TITLE_C, K_COMMAND_C, W_COMMAND_C, AUTHOR_C)
+
+            if keys[pygame.K_s]:
+                start = True
+
+        elif keys[pygame.K_p]:
+            pause = True
 
         if start == True and game_over == False and pause == False:
             moveSnake(direction, snake, VEL)
 
-            drawSnake(win, snake, PIXEL_WIDTH, PIXEL_HEIGTH)
+            drawSnake(win, snake, PIXEL_WIDTH, PIXEL_HEIGTH, BACKGROUND_C, SNAKE_C)
 
-            drawFood(win, food, PIXEL_WIDTH, PIXEL_HEIGTH)
+            drawFood(win, food, PIXEL_WIDTH, PIXEL_HEIGTH, FOOD_C)
 
             if snake[0] == food[0]:
                 growSnake(snake, PIXEL_WIDTH, PIXEL_HEIGTH)
@@ -287,19 +268,32 @@ def main():
 
             game_over = outOfBounds(snake, SCREENSIZE)
 
-            colisionSerpiente(snake)
+            game_over = snakeCollision(snake, game_over)
 
-        gameOver(win)
+        if game_over == True:
+            gameOverWindow(win, snake, GAME_OVER_C, K_COMMAND_C, W_COMMAND_C, POINTS_C)
 
-        pausar(win, keys)
+            if keys[pygame.K_q]:
+                running = False
 
-        reiniciar(keys)
+            if keys[pygame.K_r]:
+                restart(snake, food, headX, headY)
+                game_over = False
+                direction = "RIGHT"
+                pygame.display.update()
 
-        salir(keys)
+        if pause == True:
+            pauseWindow(win, K_COMMAND_C, W_COMMAND_C)
 
-        puntos(snake, win)
+            if keys[pygame.K_c]:
+                pause = False
 
     pygame.quit()
 
 
-main()
+main(BACKGROUND_C, SNAKE_C, TITLE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COMMAND_C, POINTS_C, AUTHOR_C,
+     running, game_over, pause, start,
+     SCREENSIZE, PIXEL_WIDTH, PIXEL_HEIGTH,
+     headX, headY,
+     VEL,
+     direction)
