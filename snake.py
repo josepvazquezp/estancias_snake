@@ -145,7 +145,7 @@ def gameOverWindow(win, snake, game_over_c, k_command_c, w_command_c, points_c):
 
     text1 = font.render("Game Over", True, game_over_c)
     text2 = font2.render("R", True, k_command_c)
-    text3 = font2.render("Restart", True, W_COMMAND_C)
+    text3 = font2.render("Restart", True, w_command_c)
     text4 = font2.render("Q", True, k_command_c)
     text5 = font2.render("Quit", True, w_command_c)
     points = font2.render("Points: " + str(count), True, points_c)
@@ -232,18 +232,14 @@ def main(BACKGROUND_C, SNAKE_C, TITLE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COM
 
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_RIGHT]:
-            if direction != "LEFT":
-                direction = "RIGHT"
-        elif keys[pygame.K_LEFT]:
-            if direction != "RIGHT":
-                direction = "LEFT"
-        elif keys[pygame.K_UP]:
-            if direction != "DOWN":
-                direction = "UP"
-        elif keys[pygame.K_DOWN]:
-            if direction != "UP":
-                direction = "DOWN"
+        if keys[pygame.K_RIGHT] and direction != "LEFT":
+            direction = "RIGHT"
+        elif keys[pygame.K_LEFT] and direction != "RIGHT":
+            direction = "LEFT"
+        elif keys[pygame.K_UP] and direction != "DOWN":
+            direction = "UP"
+        elif keys[pygame.K_DOWN] and direction != "UP":
+            direction = "DOWN"
 
         if start == False:
             startWindow(win, TITLE_C, K_COMMAND_C, W_COMMAND_C, AUTHOR_C)
