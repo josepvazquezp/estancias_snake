@@ -1,17 +1,16 @@
 import pygame
 import random
 
-#CONSTANTES MAYUSCULAS
 #colores
 BACKGROUND_C = (0, 0, 0)        #negro
 SNAKE_C = (0, 255, 0)           #verde
-TITLE_C = (0, 255, 0)           #verde
 FOOD_C = (255, 0, 0)            #rojo
 GAME_OVER_C = (102, 0, 153)     #morado
 W_COMMAND_C = (255, 255, 255)   #blanco
-K_COMMAND_C = (0, 255, 255)     #azul bajito
-POINTS_C = (255, 255, 0)        #amarillo
-AUTHOR_C = (232, 0, 255)        #morado 2.0
+K_COMMAND_C = (0, 255, 255)     #azul
+POINTS_C = (255, 255, 0)    #amarillo
+AUTHOR_C = (232, 0, 255)        #rosa
+TITLE_C = (0, 255, 0)           #verde
 
 #booleanos
 running = True
@@ -19,14 +18,10 @@ game_over = False
 pause = False
 start = False
 
-#dimensiones
+#dimensione
 SCREENSIZE = 500
 PIXEL_WIDTH = 10
-PIXEL_HEIGTH = 10
-
-#coordenadas de cabeza de sepiente (iniciales)
-headX = 50
-headY = 50
+PIXEL_HEIGHT = 10
 
 #velocidad de movimiento
 VEL = 10
@@ -34,7 +29,11 @@ VEL = 10
 #direccion inicial
 direction = "RIGHT"
 
-#logica de coordenadas y ancho de pixel
+#coordenadas snake inicial
+headX = 50
+headY = 50
+
+#coordenadas iniciales d ecomida
 foodX = random.randrange(0, 49) * 10
 foodY = random.randrange(0, 49) * 10
 
@@ -42,7 +41,8 @@ foodY = random.randrange(0, 49) * 10
 snake = [(headX, headY)]
 food = [(foodX, foodY)]
 
-#funciones logica del juego
+
+#funciones de logica del juego
 def moveSnake(direction, snake, vel):
     newHeadX = snake[0][0]
     newHeadY = snake[0][1]
@@ -60,26 +60,24 @@ def moveSnake(direction, snake, vel):
 
     snake.insert(0, (newHeadX, newHeadY))
 
-
-def growSnake(snake, pixelWidth, pixelHeight):
+def growSnake(snake, direction, pixelWidth, pixelHeight):
     #colision serpiente y comida
-    queueX = headX
-    queueY = headY
+    queueX = snake[0][0]
+    queueY = snake[0][1]
 
     if direction == "RIGHT":
-        queueX = headX - pixelWidth
+        queueX -= pixelWidth
     elif direction == "LEFT":
-        queueX = headX + pixelWidth
+        queueX += pixelWidth
     elif direction == "UP":
-        queueY = headY - pixelHeight
+        queueY -= pixelHeight
     elif direction == "DOWN":
-        queueY= headY + pixelHeight
+        queueY += pixelHeight
 
     snake.append((queueX, queueY))
 
-
 def teleportFood(food, pixelWidth, pixelHeight):
-    # colision serpiente y comida
+    #colision de serpiente y comida
     food.pop()
 
     x = random.randrange(0, 49) * pixelWidth
@@ -91,40 +89,39 @@ def outOfBounds(snake, screensize):
     (headX, headY) = snake[0]
 
     if headX < 0 or headX > screensize:
-        return True                     #game_over = True
+        return True                         #game_over = True
     elif headY < 0 or headY > screensize:
-        return True                     #game_over = True
+        return True
 
-    return False                        #game_over = False
+    return False
 
 def snakeCollision(snake, gameOver):
     count = snake.count(snake[0])
 
     if count > 1:
-        return True                     #game_over = True
+        return True             #game_over = True
 
     return gameOver
 
-
-def restart(snake, food, headX, headY):
+def restart(snake, food, headX, headY, pixelWidth, pixelHeight):
     snake.clear()
     snake.append((headX, headY))
 
     food.clear()
-    x = random.randrange(0, 49) * 10
-    y = random.randrange(0, 49) * 10
+    x = random.randrange(0, 49) * pixelWidth
+    y = random.randrange(0, 49) * pixelHeight
     food.append((x, y))
 
 
-#funciones interfaz grafica
+
+#funciones de interfaz grafica
 def drawSnake(win, snake, pixelWidth, pixelHeight, background_c, snake_c):
     win.fill(background_c)
 
     for pixel in snake:
-        pygame.draw.rect(win, (snake_c), (pixel[0], pixel[1], pixelWidth, pixelHeight))
+        pygame.draw.rect(win, snake_c, (pixel[0], pixel[1], pixelWidth, pixelHeight))
 
     pygame.display.update()
-
 
 def drawFood(win, food, pixelWidth, pixelHeight, food_c):
     pygame.display.flip()
@@ -133,7 +130,6 @@ def drawFood(win, food, pixelWidth, pixelHeight, food_c):
         pygame.draw.rect(win, food_c, (pixel[0], pixel[1], pixelWidth, pixelHeight))
 
     pygame.display.update()
-
 
 def gameOverWindow(win, snake, game_over_c, k_command_c, w_command_c, points_c):
     count = len(snake) - 1
@@ -166,7 +162,6 @@ def gameOverWindow(win, snake, game_over_c, k_command_c, w_command_c, points_c):
 
     pygame.display.flip()
 
-
 def pauseWindow(win, k_command_c, w_command_c):
     win_rect = win.get_rect()
 
@@ -185,8 +180,7 @@ def pauseWindow(win, k_command_c, w_command_c):
 
     pygame.display.flip()
 
-
-def startWindow(win, title_c, k_command_c, w_command_c, author_c):
+def startWindow(win, title_c, k_command_c, w_commnad_c, author_c):
     win.get_rect()
 
     f = pygame.font.Font(None, 120)
@@ -194,7 +188,7 @@ def startWindow(win, title_c, k_command_c, w_command_c, author_c):
 
     snake = f.render("SNAKE", True, title_c)
     st = s.render("S", True, k_command_c)
-    pres = s.render("Start", True, w_command_c)
+    pres = s.render("Start", True, w_commnad_c)
     by = s.render("By: JPVP", True, author_c)
 
     snake.get_rect()
@@ -209,15 +203,12 @@ def startWindow(win, title_c, k_command_c, w_command_c, author_c):
 
     pygame.display.update()
 
-
-#funcion general
-def main(BACKGROUND_C, SNAKE_C, TITLE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COMMAND_C, POINTS_C, AUTHOR_C,
-         running, game_over, pause, start,
-         SCREENSIZE, PIXEL_WIDTH, PIXEL_HEIGTH,
-         headX, headY,
-         VEL,
-         direction):
-
+#funcion principal
+def main(running, game_over, pause, start,
+         SCREENSIZE, PIXEL_WIDTH, PIXEL_HEIGHT, headX, headY,
+         snake, food,
+         BACKGROUND_C, SNAKE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COMMAND_C, POINTS_C, AUTHOR_C, TITLE_C,
+         VEL, direction):
     pygame.init()
     win = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
     pygame.display.set_caption("SnakeGame")
@@ -253,14 +244,14 @@ def main(BACKGROUND_C, SNAKE_C, TITLE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COM
         if start == True and game_over == False and pause == False:
             moveSnake(direction, snake, VEL)
 
-            drawSnake(win, snake, PIXEL_WIDTH, PIXEL_HEIGTH, BACKGROUND_C, SNAKE_C)
+            drawSnake(win, snake, PIXEL_WIDTH, PIXEL_HEIGHT, BACKGROUND_C, SNAKE_C)
 
-            drawFood(win, food, PIXEL_WIDTH, PIXEL_HEIGTH, FOOD_C)
+            drawFood(win, food, PIXEL_WIDTH, PIXEL_HEIGHT, FOOD_C)
 
             if snake[0] == food[0]:
-                growSnake(snake, PIXEL_WIDTH, PIXEL_HEIGTH)
+                growSnake(snake, direction, PIXEL_WIDTH, PIXEL_HEIGHT)
 
-                teleportFood(food, PIXEL_WIDTH, PIXEL_HEIGTH)
+                teleportFood(food, PIXEL_WIDTH, PIXEL_HEIGHT)
 
             game_over = outOfBounds(snake, SCREENSIZE)
 
@@ -273,7 +264,7 @@ def main(BACKGROUND_C, SNAKE_C, TITLE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COM
                 running = False
 
             if keys[pygame.K_r]:
-                restart(snake, food, headX, headY)
+                restart(snake, food, headX, headY, PIXEL_WIDTH, PIXEL_HEIGHT)
                 game_over = False
                 direction = "RIGHT"
                 pygame.display.update()
@@ -286,10 +277,8 @@ def main(BACKGROUND_C, SNAKE_C, TITLE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COM
 
     pygame.quit()
 
-
-main(BACKGROUND_C, SNAKE_C, TITLE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COMMAND_C, POINTS_C, AUTHOR_C,
-     running, game_over, pause, start,
-     SCREENSIZE, PIXEL_WIDTH, PIXEL_HEIGTH,
-     headX, headY,
-     VEL,
-     direction)
+main(running, game_over, pause, start,
+     SCREENSIZE, PIXEL_WIDTH, PIXEL_HEIGHT, headX, headY,
+     snake, food,
+     BACKGROUND_C, SNAKE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COMMAND_C, POINTS_C, AUTHOR_C, TITLE_C,
+     VEL, direction)
