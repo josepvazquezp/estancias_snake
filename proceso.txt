@@ -99,8 +99,8 @@
 6.- colision comida - serpiente crecer
 	-> def growSnake(snake, pixelWidth, pixelHeight):
     		#colision serpiente y comida
-    		queueX = headX
-    		queueY = headY
+    		queueX = snake[0][0]
+    		queueY = snake[0][1]
 
     		if direction == "RIGHT":
     			queueX = headX - pixelWidth
@@ -280,3 +280,46 @@
 	->  elif keys[pygame.K_p]: 						actualizar este if keys[pygame.K_p] para que ahora sea elif
 	-> if start == True and game_over == False and pause == False		actualizar el if game_over == False and pause == False
 11.- Customize colores y pantallas
+12.- mover todas las variables dentro de main y quitar todos los argumentos
+	->def main():
+    		# colores
+    		BACKGROUND_C = (0, 0, 0)  # negro
+    		SNAKE_C = (0, 255, 0)  # verde
+    		FOOD_C = (255, 0, 0)  # rojo
+    		GAME_OVER_C = (102, 0, 153)  # morado
+    		W_COMMAND_C = (255, 255, 255)  # blanco
+    		K_COMMAND_C = (0, 255, 255)  # azul
+    		POINTS_C = (255, 255, 0)  # amarillo
+    		AUTHOR_C = (232, 0, 255)  # rosa
+    		TITLE_C = (0, 255, 0)  # verde
+
+    		# booleanos
+    		running = True
+    		game_over = False
+    		pause = False
+    		start = False
+
+    		# dimensione
+    		SCREENSIZE = 500
+    		PIXEL_WIDTH = 10
+    		PIXEL_HEIGHT = 10
+
+    		# velocidad de movimiento
+    		VEL = 10
+
+    		# direccion inicial
+    		direction = "RIGHT"
+
+    		# coordenadas snake inicial
+    		headX = 50
+    		headY = 50
+
+    		# coordenadas iniciales d ecomida
+    		foodX = random.randrange(0, 49) * 10
+    		foodY = random.randrange(0, 49) * 10
+
+    		# arreglos
+    		snake = [(headX, headY)]
+    		food = [(foodX, foodY)]
+	//... 
+	-> main()

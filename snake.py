@@ -1,47 +1,6 @@
 import pygame
 import random
 
-#colores
-BACKGROUND_C = (0, 0, 0)        #negro
-SNAKE_C = (0, 255, 0)           #verde
-FOOD_C = (255, 0, 0)            #rojo
-GAME_OVER_C = (102, 0, 153)     #morado
-W_COMMAND_C = (255, 255, 255)   #blanco
-K_COMMAND_C = (0, 255, 255)     #azul
-POINTS_C = (255, 255, 0)    #amarillo
-AUTHOR_C = (232, 0, 255)        #rosa
-TITLE_C = (0, 255, 0)           #verde
-
-#booleanos
-running = True
-game_over = False
-pause = False
-start = False
-
-#dimensione
-SCREENSIZE = 500
-PIXEL_WIDTH = 10
-PIXEL_HEIGHT = 10
-
-#velocidad de movimiento
-VEL = 10
-
-#direccion inicial
-direction = "RIGHT"
-
-#coordenadas snake inicial
-headX = 50
-headY = 50
-
-#coordenadas iniciales d ecomida
-foodX = random.randrange(0, 49) * 10
-foodY = random.randrange(0, 49) * 10
-
-#arreglos
-snake = [(headX, headY)]
-food = [(foodX, foodY)]
-
-
 #funciones de logica del juego
 def moveSnake(direction, snake, vel):
     newHeadX = snake[0][0]
@@ -204,11 +163,47 @@ def startWindow(win, title_c, k_command_c, w_commnad_c, author_c):
     pygame.display.update()
 
 #funcion principal
-def main(running, game_over, pause, start,
-         SCREENSIZE, PIXEL_WIDTH, PIXEL_HEIGHT, headX, headY,
-         snake, food,
-         BACKGROUND_C, SNAKE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COMMAND_C, POINTS_C, AUTHOR_C, TITLE_C,
-         VEL, direction):
+def main():
+    # colores
+    BACKGROUND_C = (0, 0, 0)  # negro
+    SNAKE_C = (0, 255, 0)  # verde
+    FOOD_C = (255, 0, 0)  # rojo
+    GAME_OVER_C = (102, 0, 153)  # morado
+    W_COMMAND_C = (255, 255, 255)  # blanco
+    K_COMMAND_C = (0, 255, 255)  # azul
+    POINTS_C = (255, 255, 0)  # amarillo
+    AUTHOR_C = (232, 0, 255)  # rosa
+    TITLE_C = (0, 255, 0)  # verde
+
+    # booleanos
+    running = True
+    game_over = False
+    pause = False
+    start = False
+
+    # dimensione
+    SCREENSIZE = 500
+    PIXEL_WIDTH = 10
+    PIXEL_HEIGHT = 10
+
+    # velocidad de movimiento
+    VEL = 10
+
+    # direccion inicial
+    direction = "RIGHT"
+
+    # coordenadas snake inicial
+    headX = 50
+    headY = 50
+
+    # coordenadas iniciales d ecomida
+    foodX = random.randrange(0, 49) * 10
+    foodY = random.randrange(0, 49) * 10
+
+    # arreglos
+    snake = [(headX, headY)]
+    food = [(foodX, foodY)]
+
     pygame.init()
     win = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
     pygame.display.set_caption("SnakeGame")
@@ -277,8 +272,4 @@ def main(running, game_over, pause, start,
 
     pygame.quit()
 
-main(running, game_over, pause, start,
-     SCREENSIZE, PIXEL_WIDTH, PIXEL_HEIGHT, headX, headY,
-     snake, food,
-     BACKGROUND_C, SNAKE_C, FOOD_C, GAME_OVER_C, W_COMMAND_C, K_COMMAND_C, POINTS_C, AUTHOR_C, TITLE_C,
-     VEL, direction)
+main()
